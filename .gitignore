@@ -1,0 +1,58 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+.next/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data
+data/raw/*
+data/processed/*
+data/external/*
+
+# ML experiments
+ml/experiments/*
+
+# Keep directory placeholders
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
+!ml/experiments/.gitkeep
+
+# Secrets
+*.pem
+*.key
+
+# Temporary
+tmp/
+temp/
