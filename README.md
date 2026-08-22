@@ -27,7 +27,7 @@ An evidence-grounded AI/ML platform for analyzing research papers, evaluating re
 
 ## Repository Structure
 
-- pps/ — frontend and backend applications
+- apps/ — frontend and backend applications
 - services/ — domain-specific services
 - ml/ — machine learning components
 - data/ — datasets and processed data
