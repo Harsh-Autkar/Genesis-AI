@@ -7,17 +7,17 @@
 
 :root {
   /* Base surfaces */
-  --background: #f7f7f5;
+  --background: #dadbdd;
   --foreground: #1c1d1f;
-  --surface: #ffffff;
+  --surface: #eae6e6;
   --surface-muted: #f0f0ee;
-  --border: #e2e2df;
+  --border: #b2a7a7;
   --border-strong: #cfcfcb;
 
   /* Brand / primary — deep ink blue, not "SaaS blue" */
-  --primary: #1e3a5f;
+  --primary: #305d98;
   --primary-hover: #16304f;
-  --primary-foreground: #ffffff;
+  --primary-foreground: #f5f5f5;
 
   /* Secondary — muted slate */
   --secondary: #eef1f4;
@@ -27,13 +27,13 @@
   --muted-foreground: #8a8d93;
 
   /* Semantic */
-  --success: #1f7a4d;
+  --success: #1f8451;
   --success-bg: #e8f5ee;
   --warning: #9a6b12;
   --warning-bg: #faf1de;
-  --danger: #b3261e;
+  --danger: #d02b22;
   --danger-bg: #fbeae9;
-  --info: #2b5f8a;
+  --info: #318fdb;
   --info-bg: #e8f1f8;
 
   /* Evidence / confidence accent — used sparingly for citations, provenance */
@@ -174,3 +174,4 @@ body {
   font-family: var(--font-mono);
   font-size: 0.8125rem;
 }
+
