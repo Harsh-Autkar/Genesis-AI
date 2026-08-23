@@ -7,12 +7,12 @@
 
 :root {
   /* Base surfaces */
-  --background: #dadbdd;
+  --background: #ffffff;
   --foreground: #1c1d1f;
-  --surface: #eae6e6;
+  --surface: #f5f1f1;
   --surface-muted: #f0f0ee;
-  --border: #b2a7a7;
-  --border-strong: #cfcfcb;
+  --border: #bbb9b9;
+  --border-strong: #565653;
 
   /* Brand / primary — deep ink blue, not "SaaS blue" */
   --primary: #305d98;
@@ -23,8 +23,8 @@
   --secondary: #eef1f4;
   --secondary-foreground: #33414f;
 
-  --muted: #6b6f76;
-  --muted-foreground: #8a8d93;
+  --muted: #b8b2b2;
+  --muted-foreground: #595a5d;
 
   /* Semantic */
   --success: #1f8451;
