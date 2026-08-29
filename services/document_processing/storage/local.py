@@ -45,6 +45,10 @@ class LocalFileStorage:
     def exists(self, *, storage_key: str) -> bool:
         return self._resolve_key(storage_key).is_file()
 
+    def resolve_path(self, *, storage_key: str) -> Path:
+        """Resolve a storage key to its private filesystem path."""
+        return self._resolve_key(storage_key)
+
     def _resolve_key(self, storage_key: str) -> Path:
         candidate = (self.base_path / storage_key).resolve()
         base = self.base_path.resolve()
