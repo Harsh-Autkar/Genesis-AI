@@ -26,7 +26,11 @@ def test_valid_pdf_upload_is_accepted():
     assert data["project_id"] == "project-123"
     assert data["filename"] == "research-paper.pdf"
     assert data["size_bytes"] > 0
-    assert data["status"] == "VALIDATED"
+    assert data["status"] == "STORED"
+    assert data["paper_version_id"]
+    assert data["sha256"]
+    assert data["storage_key"].endswith("/original.pdf")
+    assert data["content_type"] == "application/pdf"
     assert "paper_id" in data
 
 

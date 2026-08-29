@@ -12,6 +12,7 @@ class ValidationResult:
     valid: bool
     filename: str
     size_bytes: int
+    content_type: str | None = None
     error_code: str | None = None
     error_message: str | None = None
 
@@ -70,4 +71,5 @@ def validate_document(
         valid=True,
         filename=filename,
         size_bytes=size_bytes,
+        content_type=content_type,
     )

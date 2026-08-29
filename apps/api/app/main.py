@@ -2,6 +2,8 @@ from fastapi import FastAPI
 
 from .api.papers import router as papers_router
 
+
+
 def create_app() -> FastAPI:
     app = FastAPI(
         title="Genesis-AI API",

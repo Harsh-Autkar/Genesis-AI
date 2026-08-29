@@ -57,3 +57,7 @@ ml/experiments/*
 tmp/
 temp/
 *.egg-info/
+
+# Local document storage
+data/uploads/*
+!data/uploads/.gitkeep
