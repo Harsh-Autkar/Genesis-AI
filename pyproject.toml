@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genesis-ai"
+version = "0.1.0"
+description = "Research intelligence platform for evidence-grounded research paper analysis."
+requires-python = ">=3.13"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "services*",
+    "apps.api.app*",
+]
+exclude = [
+    "tests*",
+]

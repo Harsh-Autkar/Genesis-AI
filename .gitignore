@@ -56,3 +56,4 @@ ml/experiments/*
 # Temporary
 tmp/
 temp/
+*.egg-info/
