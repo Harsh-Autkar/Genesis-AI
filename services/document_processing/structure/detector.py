@@ -130,13 +130,6 @@ def looks_like_heading(line: str) -> bool:
 
     return False
 
-    normalized = normalize_heading(stripped)
-
-    return any(
-        normalized in aliases
-        for aliases in SECTION_ALIASES.values()
-    )
-
 
 class HeuristicStructureDetector:
     """Detect common research-paper sections using text heuristics."""
