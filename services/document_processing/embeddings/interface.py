@@ -14,9 +14,26 @@ class EmbeddingInput:
     position: int
 
 
+@dataclass(frozen=True)
+class EmbeddingRecord:
+    source_type: str
+    source_id: str
+    model_name: str
+    model_version: str
+    vector: tuple[float, ...]
+
+
 class EmbeddingPreparer(Protocol):
     def prepare(
         self,
         chunks,
     ) -> tuple[EmbeddingInput, ...]:
         """Prepare document chunks for embedding generation."""
+
+
+class EmbeddingGenerator(Protocol):
+    def generate(
+        self,
+        inputs: tuple[EmbeddingInput, ...],
+    ) -> tuple[EmbeddingRecord, ...]:
+        """Generate embeddings for prepared document inputs."""
