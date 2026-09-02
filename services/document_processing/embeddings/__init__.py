@@ -6,6 +6,11 @@ from .interface import (
 )
 from .preparer import BasicEmbeddingPreparer
 from .generator import SentenceTransformerEmbeddingGenerator
+from .repository import (
+    EmbeddingRepository,
+    PostgreSQLEmbeddingRepository,
+    StoredEmbedding,
+)
 
 __all__ = [
     "EmbeddingGenerator",
@@ -14,4 +19,7 @@ __all__ = [
     "EmbeddingRecord",
     "SentenceTransformerEmbeddingGenerator",
     "BasicEmbeddingPreparer",
+    "EmbeddingRepository",
+    "StoredEmbedding",
+    "PostgreSQLEmbeddingRepository",
 ]

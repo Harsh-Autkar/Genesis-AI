@@ -1,5 +1,4 @@
 from pathlib import Path
-from unittest import result
 
 import pymupdf
 from PIL import Image, ImageDraw, ImageFont

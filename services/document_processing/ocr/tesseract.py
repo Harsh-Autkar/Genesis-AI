@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from PIL import Image
@@ -9,9 +10,20 @@ from .interface import OCRPage
 class TesseractOCRService:
     """Extract text from rendered document pages using Tesseract."""
 
+    DEFAULT_WINDOWS_PATH = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
     def __init__(self, tesseract_cmd: str | None = None) -> None:
-        if tesseract_cmd:
-            pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
+        configured_cmd = tesseract_cmd or os.getenv("TESSERACT_CMD")
+
+        if configured_cmd:
+            pytesseract.pytesseract.tesseract_cmd = configured_cmd
+        elif (
+            os.name == "nt"
+            and Path(self.DEFAULT_WINDOWS_PATH).is_file()
+        ):
+            pytesseract.pytesseract.tesseract_cmd = (
+                self.DEFAULT_WINDOWS_PATH
+            )
 
     def extract_page(
         self,
@@ -22,7 +34,9 @@ class TesseractOCRService:
         path = Path(image_path)
 
         if not path.is_file():
-            raise FileNotFoundError(f"Image file not found: {image_path}")
+            raise FileNotFoundError(
+                f"Image file not found: {image_path}"
+            )
 
         with Image.open(path) as image:
             text = pytesseract.image_to_string(image)
