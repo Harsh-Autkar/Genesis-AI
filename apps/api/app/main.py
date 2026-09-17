@@ -2,7 +2,9 @@ from fastapi import FastAPI
 
 from .api.papers import router as papers_router
 
+from .api.projects import router as projects_router
 
+from .api.jobs import router as jobs_router
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -10,6 +12,8 @@ def create_app() -> FastAPI:
         version="0.1.0",
         description="Backend API for the Genesis-AI research intelligence platform.",
     )
+    app.include_router(jobs_router)
+    app.include_router(projects_router)
 
     @app.get("/health")
     async def health_check():

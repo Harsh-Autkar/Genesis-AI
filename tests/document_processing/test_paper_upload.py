@@ -4,12 +4,23 @@ from fastapi.testclient import TestClient
 
 from apps.api.app.main import app
 
+
 client = TestClient(app)
 
 
+def create_test_project() -> str:
+    response = client.post("/api/v1/projects")
+
+    assert response.status_code == 201
+
+    return response.json()["project_id"]
+
+
 def test_valid_pdf_upload_is_accepted():
+    project_id = create_test_project()
+
     response = client.post(
-        "/api/v1/projects/project-123/papers",
+        f"/api/v1/projects/{project_id}/papers",
         files={
             "file": (
                 "research-paper.pdf",
@@ -19,24 +30,27 @@ def test_valid_pdf_upload_is_accepted():
         },
     )
 
-    assert response.status_code == 201
+    assert response.status_code == 202
 
     data = response.json()
 
-    assert data["project_id"] == "project-123"
+    assert data["project_id"] == project_id
     assert data["filename"] == "research-paper.pdf"
     assert data["size_bytes"] > 0
-    assert data["status"] == "STORED"
+    assert data["status"] == "QUEUED"
     assert data["paper_version_id"]
     assert data["sha256"]
     assert data["storage_key"].endswith("/original.pdf")
     assert data["content_type"] == "application/pdf"
-    assert "paper_id" in data
+    assert data["paper_id"]
+    assert data["job_id"]
 
 
 def test_non_pdf_upload_is_rejected():
+    project_id = create_test_project()
+
     response = client.post(
-        "/api/v1/projects/project-123/papers",
+        f"/api/v1/projects/{project_id}/papers",
         files={
             "file": (
                 "research-paper.docx",
@@ -54,8 +68,10 @@ def test_non_pdf_upload_is_rejected():
 
 
 def test_wrong_content_type_is_rejected():
+    project_id = create_test_project()
+
     response = client.post(
-        "/api/v1/projects/project-123/papers",
+        f"/api/v1/projects/{project_id}/papers",
         files={
             "file": (
                 "research-paper.pdf",
@@ -73,8 +89,10 @@ def test_wrong_content_type_is_rejected():
 
 
 def test_empty_upload_is_rejected():
+    project_id = create_test_project()
+
     response = client.post(
-        "/api/v1/projects/project-123/papers",
+        f"/api/v1/projects/{project_id}/papers",
         files={
             "file": (
                 "research-paper.pdf",
@@ -92,10 +110,12 @@ def test_empty_upload_is_rejected():
 
 
 def test_upload_over_15_mb_is_rejected():
+    project_id = create_test_project()
+
     oversized_content = b"x" * (15 * 1024 * 1024 + 1)
 
     response = client.post(
-        "/api/v1/projects/project-123/papers",
+        f"/api/v1/projects/{project_id}/papers",
         files={
             "file": (
                 "research-paper.pdf",
