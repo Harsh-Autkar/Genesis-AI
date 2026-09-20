@@ -1,9 +1,8 @@
-from unittest import result
-
 from services.document_processing.pipeline.interface import PipelineResult
 from services.document_processing.pipeline.pipeline import (
     DefaultDocumentProcessingPipeline,
 )
+from services.persistence.paper_chunks import PaperChunkRepository
 from services.persistence.paper_versions import PaperVersionRepository
 from services.persistence.processing_jobs import (
     ProcessingJobRepository,
@@ -18,10 +17,12 @@ class DocumentProcessingWorker:
         *,
         job_repository: ProcessingJobRepository,
         paper_version_repository: PaperVersionRepository,
+        paper_chunk_repository: PaperChunkRepository,
         pipeline: DefaultDocumentProcessingPipeline,
     ) -> None:
         self.job_repository = job_repository
         self.paper_version_repository = paper_version_repository
+        self.paper_chunk_repository = paper_chunk_repository
         self.pipeline = pipeline
 
     def run_once(self) -> PipelineResult | None:
@@ -59,6 +60,43 @@ class DocumentProcessingWorker:
             )
             return None
 
+        try:
+            self.paper_chunk_repository.create_many(
+                chunks=self._build_chunk_records(
+                    result=result,
+                    paper_version_id=paper_version.id,
+                    pipeline_version=job.pipeline_version,
+                )
+            )
+        except Exception as exc:
+            self.job_repository.retry(
+                job.id,
+                error_code="OUTPUT_PERSISTENCE_ERROR",
+                error_message=str(exc),
+            )
+            return None
+
         self.job_repository.mark_succeeded(job.id)
 
         return result
+
+    @staticmethod
+    def _build_chunk_records(
+        *,
+        result: PipelineResult,
+        paper_version_id,
+        pipeline_version: str,
+    ) -> list[dict]:
+        return [
+            {
+                "id": __import__("uuid").UUID(chunk.chunk_id),
+                "paper_version_id": paper_version_id,
+                "text": chunk.text,
+                "section_type": chunk.section_type.value,
+                "start_page": chunk.start_page,
+                "end_page": chunk.end_page,
+                "position": chunk.position,
+                "pipeline_version": pipeline_version,
+            }
+            for chunk in result.chunks
+        ]
