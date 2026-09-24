@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+﻿from dataclasses import dataclass
 from typing import Protocol
 
 import psycopg
@@ -24,9 +24,11 @@ class EmbeddingRepository(Protocol):
         self,
         *,
         vector: tuple[float, ...],
+        model_name: str,
+        model_version: str,
         limit: int = 10,
     ) -> tuple[StoredEmbedding, ...]:
-        """Return the most similar stored embeddings."""
+        """Return the most similar stored embeddings for one model version."""
 
 
 class PostgreSQLEmbeddingRepository:
@@ -54,6 +56,12 @@ class PostgreSQLEmbeddingRepository:
                         vector
                     )
                     VALUES (%s, %s, %s, %s, %s::vector)
+                    ON CONFLICT (
+                        source_type,
+                        source_id,
+                        model_name,
+                        model_version
+                    ) DO NOTHING
                     """,
                     [
                         (
@@ -71,6 +79,8 @@ class PostgreSQLEmbeddingRepository:
         self,
         *,
         vector: tuple[float, ...],
+        model_name: str,
+        model_version: str,
         limit: int = 10,
     ) -> tuple[StoredEmbedding, ...]:
         if limit <= 0:
@@ -87,10 +97,14 @@ class PostgreSQLEmbeddingRepository:
                         model_version,
                         vector
                     FROM embeddings
+                    WHERE model_name = %s
+                      AND model_version = %s
                     ORDER BY vector <=> %s::vector
                     LIMIT %s
                     """,
                     (
+                        model_name,
+                        model_version,
                         self._vector_literal(vector),
                         limit,
                     ),
@@ -114,26 +128,22 @@ class PostgreSQLEmbeddingRepository:
         if not vector:
             raise ValueError("Embedding vector must not be empty.")
 
-        return "[" + ",".join(str(float(value)) for value in vector) + "]"
+        return "[" + ",".join(str(value) for value in vector) + "]"
 
     @staticmethod
-    def _parse_vector(
-        value: str | list[float] | tuple[float, ...],
-    ) -> tuple[float, ...]:
+    def _parse_vector(value) -> tuple[float, ...]:
         if isinstance(value, str):
-            value = value.strip()
+            stripped = value.strip().strip("[]")
 
-            if not value.startswith("[") or not value.endswith("]"):
-                raise ValueError("Invalid pgvector value.")
-
-            value = value[1:-1]
-
-            if not value:
+            if not stripped:
                 return ()
 
             return tuple(
-                float(item)
-                for item in value.split(",")
+                float(item.strip())
+                for item in stripped.split(",")
             )
 
-        return tuple(float(item) for item in value)
+        try:
+            return tuple(float(item) for item in value)
+        except TypeError as exc:
+            raise TypeError("Unsupported pgvector value.") from exc
