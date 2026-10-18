@@ -4,3 +4,4 @@ python-multipart==0.0.32
 pymupdf==1.28.2
 pytesseract==0.3.13
 Pillow==12.3.0
+psycopg[binary]==3.2.10
